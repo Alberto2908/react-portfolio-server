@@ -35,6 +35,9 @@ public class Proyecto {
             @Size(max = 50, message = "Cada tecnología no puede exceder 50 caracteres")
                     String> tecnologias;
 
+    @Size(max = 300, message = "Imagen no puede exceder 300 caracteres")
+    private String imagen;
+
     @NotBlank(message = "Enlace es requerido")
     @Size(max = 200, message = "Enlace no puede exceder 200 caracteres")
     private String enlace;
@@ -44,5 +47,13 @@ public class Proyecto {
         this.descripcion = descripcion;
         this.tecnologias = tecnologias;
         this.enlace = enlace;
+    }
+
+    public Proyecto(String nombre, String descripcion, List<String> tecnologias, String enlace, String imagen) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.tecnologias = tecnologias;
+        this.enlace = enlace;
+        this.imagen = imagen;
     }
 }
