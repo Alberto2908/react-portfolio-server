@@ -38,22 +38,11 @@ public class Proyecto {
     @Size(max = 300, message = "Imagen no puede exceder 300 caracteres")
     private String imagen;
 
-    @NotBlank(message = "Enlace es requerido")
+    @NotBlank(message = "Enlace a GitHub es requerido")
     @Size(max = 200, message = "Enlace no puede exceder 200 caracteres")
-    private String enlace;
+    private String enlaceGithub;
 
-    public Proyecto(String nombre, String descripcion, List<String> tecnologias, String enlace) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.tecnologias = tecnologias;
-        this.enlace = enlace;
-    }
-
-    public Proyecto(String nombre, String descripcion, List<String> tecnologias, String enlace, String imagen) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.tecnologias = tecnologias;
-        this.enlace = enlace;
-        this.imagen = imagen;
-    }
+    @Size(max = 200, message = "Enlace no puede exceder 200 caracteres")
+    private String enlaceDespliegue;
 }
+

@@ -43,7 +43,8 @@ public class ProyectoController {
     public ResponseEntity<Proyecto> create(
             @RequestParam("nombre") String nombre,
             @RequestParam("descripcion") String descripcion,
-            @RequestParam("enlace") String enlace,
+            @RequestParam("enlaceGithub") String enlaceGithub,
+            @RequestParam(value = "enlaceDespliegue", required = false) String enlaceDespliegue,
             @RequestParam("tecnologias") List<String> tecnologias,
             @RequestPart(value = "imagen", required = false) MultipartFile imagen
     ) throws IOException {
@@ -51,7 +52,13 @@ public class ProyectoController {
         if (imagen != null && !imagen.isEmpty()) {
             imagePath = saveImage(imagen);
         }
-        Proyecto proyecto = new Proyecto(nombre, descripcion, tecnologias, enlace, imagePath != null ? imagePath : null);
+        Proyecto proyecto = new Proyecto();
+        proyecto.setNombre(nombre);
+        proyecto.setDescripcion(descripcion);
+        proyecto.setTecnologias(tecnologias);
+        proyecto.setEnlaceGithub(enlaceGithub);
+        proyecto.setEnlaceDespliegue(enlaceDespliegue);
+        proyecto.setImagen(imagePath);
         Proyecto created = proyectoService.create(proyecto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -61,7 +68,8 @@ public class ProyectoController {
             @PathVariable String id,
             @RequestParam("nombre") String nombre,
             @RequestParam("descripcion") String descripcion,
-            @RequestParam("enlace") String enlace,
+            @RequestParam("enlaceGithub") String enlaceGithub,
+            @RequestParam(value = "enlaceDespliegue", required = false) String enlaceDespliegue,
             @RequestParam("tecnologias") List<String> tecnologias,
             @RequestPart(value = "imagen", required = false) MultipartFile imagen
     ) throws IOException {
@@ -74,8 +82,14 @@ public class ProyectoController {
             imagePath = saveImage(imagen);
         }
 
-        Proyecto payload = new Proyecto(id, nombre, descripcion, tecnologias, imagePath, enlace);
-        Proyecto updated = proyectoService.update(id, payload);
+        existing.setNombre(nombre);
+        existing.setDescripcion(descripcion);
+        existing.setTecnologias(tecnologias);
+        existing.setEnlaceGithub(enlaceGithub);
+        existing.setEnlaceDespliegue(enlaceDespliegue);
+        existing.setImagen(imagePath);
+
+        Proyecto updated = proyectoService.update(id, existing);
         return ResponseEntity.ok(updated);
     }
 
