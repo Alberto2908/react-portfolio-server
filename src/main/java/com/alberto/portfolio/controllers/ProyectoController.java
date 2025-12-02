@@ -106,7 +106,7 @@ public class ProyectoController {
         }
         String original = file.getOriginalFilename();
         String sanitized = original == null ? "image" : original.replaceAll("[^a-zA-Z0-9._-]", "_");
-        String filename = System.currentTimeMillis() + "_" + sanitized;
+        String filename = sanitized; // keep original filename (sanitized)
         Path target = uploadDir.resolve(filename);
         Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
         return "/uploads/proyectos/" + filename;
