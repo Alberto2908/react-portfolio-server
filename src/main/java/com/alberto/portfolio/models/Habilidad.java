@@ -27,6 +27,5 @@ public class Habilidad {
     @NotBlank
     private String category;
 
-    // Optional ordering position (1-based). Null means no fixed position.
-    private Integer position;
+    private Integer posicion;
 }

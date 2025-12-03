@@ -46,6 +46,7 @@ public class ProyectoController {
             @RequestParam("enlaceGithub") String enlaceGithub,
             @RequestParam(value = "enlaceDespliegue", required = false) String enlaceDespliegue,
             @RequestParam("tecnologias") List<String> tecnologias,
+            @RequestParam(value = "posicion", required = false) Integer posicion,
             @RequestPart(value = "imagen", required = false) MultipartFile imagen
     ) throws IOException {
         String imagePath = null;
@@ -59,6 +60,7 @@ public class ProyectoController {
         proyecto.setEnlaceGithub(enlaceGithub);
         proyecto.setEnlaceDespliegue(enlaceDespliegue);
         proyecto.setImagen(imagePath);
+        proyecto.setPosicion(posicion);
         Proyecto created = proyectoService.create(proyecto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -71,6 +73,7 @@ public class ProyectoController {
             @RequestParam("enlaceGithub") String enlaceGithub,
             @RequestParam(value = "enlaceDespliegue", required = false) String enlaceDespliegue,
             @RequestParam("tecnologias") List<String> tecnologias,
+            @RequestParam(value = "posicion", required = false) Integer posicion,
             @RequestPart(value = "imagen", required = false) MultipartFile imagen
     ) throws IOException {
         Proyecto existing = proyectoService.findById(id).orElse(null);
@@ -88,6 +91,9 @@ public class ProyectoController {
         existing.setEnlaceGithub(enlaceGithub);
         existing.setEnlaceDespliegue(enlaceDespliegue);
         existing.setImagen(imagePath);
+        if (posicion != null) {
+            existing.setPosicion(posicion);
+        }
 
         Proyecto updated = proyectoService.update(id, existing);
         return ResponseEntity.ok(updated);

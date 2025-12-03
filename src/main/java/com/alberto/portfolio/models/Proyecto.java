@@ -44,5 +44,8 @@ public class Proyecto {
 
     @Size(max = 200, message = "Enlace no puede exceder 200 caracteres")
     private String enlaceDespliegue;
+
+    // Optional ordering position (1-based). Null means no fixed position.
+    private Integer posicion;
 }
 

@@ -69,6 +69,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/visits/increment").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/visits").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/contact/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/contacto/**").permitAll()
 
                 // Public reads for content
                 .requestMatchers(HttpMethod.GET, "/api/experiencias/**").permitAll()

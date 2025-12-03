@@ -43,14 +43,14 @@ public class HabilidadController {
     public ResponseEntity<Habilidad> create(
             @RequestParam("name") String name,
             @RequestParam("category") String category,
-            @RequestParam(value = "position", required = false) Integer position,
+            @RequestParam(value = "posicion", required = false) Integer posicion,
             @RequestPart(value = "image", required = false) MultipartFile image
     ) throws IOException {
         String imagePath = null;
         if (image != null && !image.isEmpty()) {
             imagePath = saveImage(image);
         }
-        Habilidad habilidad = new Habilidad(null, name, imagePath != null ? imagePath : "", category, position);
+        Habilidad habilidad = new Habilidad(null, name, imagePath != null ? imagePath : "", category, posicion);
         Habilidad created = habilidadService.create(habilidad);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -60,7 +60,7 @@ public class HabilidadController {
             @PathVariable String id,
             @RequestParam("name") String name,
             @RequestParam("category") String category,
-            @RequestParam(value = "position", required = false) Integer position,
+            @RequestParam(value = "posicion", required = false) Integer posicion,
             @RequestPart(value = "image", required = false) MultipartFile image
     ) throws IOException {
         Habilidad existing = habilidadService.findById(id).orElse(null);
@@ -75,9 +75,8 @@ public class HabilidadController {
             imagePath = saveImage(image);
         }
 
-        // Keep existing position if not provided
-        Integer finalPosition = (position != null) ? position : existing.getPosition();
-        Habilidad payload = new Habilidad(id, name, imagePath != null ? imagePath : "", category, finalPosition);
+        Integer finalPosicion = (posicion != null) ? posicion : existing.getPosicion();
+        Habilidad payload = new Habilidad(id, name, imagePath != null ? imagePath : "", category, finalPosicion);
         Habilidad updated = habilidadService.update(id, payload);
         return ResponseEntity.ok(updated);
     }
@@ -95,7 +94,7 @@ public class HabilidadController {
         }
         String original = file.getOriginalFilename();
         String sanitized = original == null ? "image" : original.replaceAll("[^a-zA-Z0-9._-]", "_");
-        String filename = sanitized; // keep original filename (sanitized)
+        String filename = sanitized;
         Path target = uploadDir.resolve(filename);
         Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
         return "/uploads/habilidades/" + filename;
