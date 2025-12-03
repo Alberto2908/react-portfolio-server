@@ -1,0 +1,31 @@
+# Git
+.git
+.gitignore
+
+# Maven build output
+target/
+!target/portfolio-backend-0.0.1-SNAPSHOT.jar
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Docs
+README.md
+*.md
+
+# Backups
+backup/
