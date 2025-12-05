@@ -106,7 +106,7 @@ public class ProyectoController {
     }
 
     private String saveImage(MultipartFile file) throws IOException {
-        Path uploadDir = Paths.get("uploads", "proyectos");
+        Path uploadDir = Paths.get(System.getenv().getOrDefault("UPLOADS_DIR", "uploads")).resolve("proyectos");
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
         }
@@ -122,7 +122,9 @@ public class ProyectoController {
         if (imagePath == null) return;
         if (!imagePath.startsWith("/uploads/proyectos/")) return;
         try {
-            Path target = Paths.get("uploads", "proyectos", imagePath.replace("/uploads/proyectos/", ""));
+            Path target = Paths.get(System.getenv().getOrDefault("UPLOADS_DIR", "uploads"))
+                    .resolve("proyectos")
+                    .resolve(imagePath.replace("/uploads/proyectos/", ""));
             Files.deleteIfExists(target);
         } catch (Exception ignored) { }
     }

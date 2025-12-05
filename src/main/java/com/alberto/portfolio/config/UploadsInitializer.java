@@ -12,7 +12,8 @@ import java.nio.file.Paths;
 public class UploadsInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Path base = Paths.get("uploads");
+        String baseDir = System.getenv().getOrDefault("UPLOADS_DIR", "uploads");
+        Path base = Paths.get(baseDir);
         Path habilidades = base.resolve("habilidades");
         Path proyectos = base.resolve("proyectos");
         Files.createDirectories(habilidades);

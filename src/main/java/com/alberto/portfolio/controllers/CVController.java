@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 @CrossOrigin(origins = "http://localhost:5173")
 public class CVController {
 
-    private static final Path UPLOAD_DIR = Paths.get("uploads", "cv");
+    private static final Path UPLOAD_DIR = Paths.get(System.getenv().getOrDefault("UPLOADS_DIR", "uploads"), "cv");
     private static final String TARGET_FILENAME = "cv.pdf";
 
     @PreAuthorize("hasRole('ADMIN')")

@@ -88,7 +88,7 @@ public class HabilidadController {
     }
 
     private String saveImage(MultipartFile file) throws IOException {
-        Path uploadDir = Paths.get("uploads", "habilidades");
+        Path uploadDir = Paths.get(System.getenv().getOrDefault("UPLOADS_DIR", "uploads")).resolve("habilidades");
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
         }
@@ -104,7 +104,9 @@ public class HabilidadController {
         if (imagePath == null) return;
         if (!imagePath.startsWith("/uploads/habilidades/")) return;
         try {
-            Path target = Paths.get("uploads", "habilidades", imagePath.replace("/uploads/habilidades/", ""));
+            Path target = Paths.get(System.getenv().getOrDefault("UPLOADS_DIR", "uploads"))
+                    .resolve("habilidades")
+                    .resolve(imagePath.replace("/uploads/habilidades/", ""));
             Files.deleteIfExists(target);
         } catch (Exception ignored) { }
     }

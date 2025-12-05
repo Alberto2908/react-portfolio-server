@@ -12,7 +12,8 @@ public class StaticResourceConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        Path uploadDir = Paths.get("uploads");
+        String base = System.getenv().getOrDefault("UPLOADS_DIR", "uploads");
+        Path uploadDir = Paths.get(base);
         String uploadPath = uploadDir.toFile().getAbsolutePath();
 
         registry.addResourceHandler("/uploads/**")
