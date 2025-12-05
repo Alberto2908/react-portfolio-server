@@ -92,7 +92,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/api/proyectos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/cv/**").hasRole("ADMIN")
 
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
             .authenticationProvider(authenticationProvider());
