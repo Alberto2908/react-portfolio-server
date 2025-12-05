@@ -10,24 +10,24 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // Static uploads (icons/images)
         registry.addMapping("/uploads/**")
-                .allowedOrigins(
+                .allowedOriginPatterns(
                         "http://localhost:5173",
-                        "https://alberto-cabello-portfolio.vercel.app",
-                        "https://alberto-cabello-portfolio-alberto2908s-projects.vercel.app"
+                        "https://*.vercel.app",
+                        "https://alberto-cabello-portfolio.vercel.app"
                 )
                 .allowedMethods("GET", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowCredentials(false);
 
         // API (redundant with @CrossOrigin on controllers, but kept for consistency)
         registry.addMapping("/api/**")
-                .allowedOrigins(
+                .allowedOriginPatterns(
                         "http://localhost:5173",
-                        "https://alberto-cabello-portfolio.vercel.app",
-                        "https://alberto-cabello-portfolio-alberto2908s-projects.vercel.app"
+                        "https://*.vercel.app",
+                        "https://alberto-cabello-portfolio.vercel.app"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowCredentials(false);
     }
 }
