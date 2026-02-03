@@ -23,7 +23,11 @@ import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/cv")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(originPatterns = {
+        "http://localhost:5173",
+        "https://*.vercel.app",
+        "https://*.onrender.com"
+})
 public class CVController {
 
     private static final Path UPLOAD_DIR = Paths.get(System.getenv().getOrDefault("UPLOADS_DIR", "uploads"), "cv");
@@ -53,33 +57,62 @@ public class CVController {
         }
     }
 
-    @GetMapping(value = "/download")
-    public ResponseEntity<Resource> downloadCv() {
+    private Path resolveCvPath() throws IOException {
+        if (!Files.exists(UPLOAD_DIR)) {
+            return null;
+        }
+
+        Path fallback = UPLOAD_DIR.resolve(TARGET_FILENAME);
+        if (Files.exists(fallback)) {
+            return fallback;
+        }
+
+        Path preferred = UPLOAD_DIR.resolve(PUBLIC_DOWNLOAD_NAME);
+        if (Files.exists(preferred)) {
+            return preferred;
+        }
+
+        try (Stream<Path> files = Files.list(UPLOAD_DIR)) {
+            Optional<Path> anyPdf = files
+                    .filter(p -> p.getFileName().toString().toLowerCase().endsWith(".pdf"))
+                    .findFirst();
+            return anyPdf.orElse(null);
+        }
+    }
+
+    @GetMapping(value = "/view", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<Resource> viewCv() {
         try {
-            if (!Files.exists(UPLOAD_DIR)) {
+            Path toServe = resolveCvPath();
+            if (toServe == null || !Files.exists(toServe)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
 
-            // Prefer a file named exactly as the public name, else fallback to cv.pdf, else any .pdf
-            Path preferred = UPLOAD_DIR.resolve(PUBLIC_DOWNLOAD_NAME);
-            Path fallback = UPLOAD_DIR.resolve(TARGET_FILENAME);
-            Path toServe = null;
-
-            if (Files.exists(preferred)) {
-                toServe = preferred;
-            } else if (Files.exists(fallback)) {
-                toServe = fallback;
-            } else {
-                try (Stream<Path> files = Files.list(UPLOAD_DIR)) {
-                    Optional<Path> anyPdf = files
-                        .filter(p -> p.getFileName().toString().toLowerCase().endsWith(".pdf"))
-                        .findFirst();
-                    if (anyPdf.isPresent()) {
-                        toServe = anyPdf.get();
-                    }
-                }
+            Resource resource = new UrlResource(toServe.toUri());
+            if (!resource.exists() || !resource.isReadable()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
 
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentDisposition(ContentDisposition.inline()
+                    .filename(PUBLIC_DOWNLOAD_NAME, StandardCharsets.UTF_8)
+                    .build());
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(resource);
+        } catch (MalformedURLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping(value = "/download", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<Resource> downloadCv() {
+        try {
+            Path toServe = resolveCvPath();
             if (toServe == null || !Files.exists(toServe)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
@@ -91,8 +124,8 @@ public class CVController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentDisposition(ContentDisposition.attachment()
-                .filename(PUBLIC_DOWNLOAD_NAME, StandardCharsets.UTF_8)
-                .build());
+                    .filename(PUBLIC_DOWNLOAD_NAME, StandardCharsets.UTF_8)
+                    .build());
 
             return ResponseEntity.ok()
                     .headers(headers)
