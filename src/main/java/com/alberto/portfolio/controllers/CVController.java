@@ -2,7 +2,6 @@ package com.alberto.portfolio.controllers;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -92,9 +93,10 @@ public class CVController {
             }
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentDisposition(ContentDisposition.inline()
-                    .filename(PUBLIC_DOWNLOAD_NAME)
-                    .build());
+            String asciiName = PUBLIC_DOWNLOAD_NAME;
+            String encodedName = URLEncoder.encode(asciiName, StandardCharsets.UTF_8).replace("+", "%20");
+            headers.set(HttpHeaders.CONTENT_DISPOSITION,
+                    "inline; filename=\"" + asciiName + "\"; filename*=UTF-8''" + encodedName);
 
             return ResponseEntity.ok()
                     .headers(headers)
@@ -121,9 +123,10 @@ public class CVController {
             }
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentDisposition(ContentDisposition.attachment()
-                    .filename(PUBLIC_DOWNLOAD_NAME)
-                    .build());
+            String asciiName = PUBLIC_DOWNLOAD_NAME;
+            String encodedName = URLEncoder.encode(asciiName, StandardCharsets.UTF_8).replace("+", "%20");
+            headers.set(HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + asciiName + "\"; filename*=UTF-8''" + encodedName);
 
             return ResponseEntity.ok()
                     .headers(headers)
